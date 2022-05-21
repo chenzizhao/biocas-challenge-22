@@ -6,7 +6,9 @@ Please submit an issue if you have a question.
 
 ## Set up
 
-Step 1: Initialize the dependency with `conda`. The main dependency is `torch` and `torchaudio`.
+Step 1: Clone this repository.
+
+Step 2: Initialize the dependency with `conda`. The main dependency is `torch` and `torchaudio`.
 
 ```shell
 mkdir biocas
@@ -15,7 +17,9 @@ conda create --name biocas --file environment.yml
 conda activate biocas
 ```
 
-Step 2: Run mini test cases as provided by the organizers (WIP)
+Step 3: Run mini test cases as provided by the organizers.
+
+TODO
 
 ```shell
 bash ./testcase/test.sh
@@ -28,6 +32,12 @@ python3 main.py --task 11 --wav /path/to/task1_wav/ --out /path/to/task11_output
 ```
 
 ## Development
+
+### Original data
+
+The raw data are provided <https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound>, in the form of .wav and .json (as illustrated in `testcase`).
+
+TODO Download data to `data/resp` and implement a custom Dataset instance.
 
 ### Train and test
 
@@ -58,7 +68,7 @@ conda env export > environment.yml
 
 ## Acknowledegment
 
-This repository is generated from the [PyTorch Template Project](https://github.com/victoresque/pytorch-template) by [Victor Huang](https://github.com/victoresque). Below is the original `README.md`, just for your for reference.
+This repository is generated from the [PyTorch Template Project](https://github.com/victoresque/pytorch-template) by [Victor Huang](https://github.com/victoresque). Below is the original `README.md`, just for your reference.
 
 # PyTorch Template Project
 
