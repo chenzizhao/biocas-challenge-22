@@ -1,15 +1,15 @@
 {
-    "name": "Audio_Resp",
+    "name": "Audio_Resp_21",
     "n_gpu": 1,
 
     "arch": {
-        "type": "YesNoModel",
+        "type": "Resp21Model",
         "args": {}
     },
     "data_loader": {
-        "type": "YesNoDataLoader",
+        "type": "Resp21DataLoader",
         "args":{
-            "data_dir": "data/resp/",
+            "data_dir": "../SPRSound/",
             "batch_size": 128,
             "shuffle": true,
             "validation_split": 0.1,
@@ -47,6 +47,7 @@
 
         "tensorboard": true
     },
+    
     "main": {
         "task_level": 1,
         "wav_dir": "testcase/task1_wav/",

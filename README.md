@@ -11,15 +11,14 @@ Step 1: Clone this repository.
 Step 2: Initialize the dependency with `conda`. The main dependency is `torch` and `torchaudio`.
 
 ```shell
-mkdir biocas
-cd biocas/
+cd biocas-challenge-22/
 conda create --name biocas --file environment.yml
 conda activate biocas
 ```
 
 Step 3: Run mini test cases as provided by the organizers.
 
-TODO
+TODO work in progress
 
 ```shell
 bash ./testcase/test.sh
@@ -33,11 +32,21 @@ python3 main.py --task 11 --wav /path/to/task1_wav/ --out /path/to/task11_output
 
 ## Development
 
-### Original data
+### Data preprocessing
 
 The raw data are provided <https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound>, in the form of .wav and .json (as illustrated in `testcase`).
 
-TODO Download data to `data/resp` and implement a custom Dataset instance.
+Step 1: Clone the data [repo](https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound). My folder structure is the following:
+
+```
+Projects
+  |-- SPRSound
+  |-- biocas-challenge-22
+```
+
+Step 2:
+
+TODO add rec_info.csv and Datasets.py (link to my branch of dataset)
 
 ### Train and test
 
@@ -63,6 +72,7 @@ More here [Tensorboard Visualization](#tensorboard-visualization)
 ```shell
 conda install scipy
 conda remove scipy
+conda clean -a
 conda env export > environment.yml
 ```
 
