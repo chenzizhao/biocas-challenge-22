@@ -19,4 +19,16 @@ class MnistModel(BaseModel):
         x = F.relu(self.fc1(x))
         x = F.dropout(x, training=self.training)
         x = self.fc2(x)
-        return F.log_softmax(x, dim=1)
+        x = F.log_softmax(x, dim=1)
+        return x
+
+class YesNoModel(BaseModel):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(55840, 128)
+        self.fc2 = nn.Linear(128, 8)
+
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = F.tanh(self.fc2(x))
+        return x
