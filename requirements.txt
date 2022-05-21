@@ -1,3 +1,5 @@
+# This is the original requirement from the template.
+# Use environment.yml instead.
 torch>=1.1
 torchvision
 numpy

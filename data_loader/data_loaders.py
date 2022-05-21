@@ -3,22 +3,7 @@ from os.path import join
 from base import BaseDataLoader
 import torch
 import torch.nn.functional as F
-from torchvision import datasets as datasetsV, transforms
-from torchaudio import datasets as datasetsA, load
-
-class MnistDataLoader(BaseDataLoader):
-    """
-    MNIST data loading demo using BaseDataLoader
-    """
-    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True):
-        trsfm = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,))
-        ])
-        self.data_dir = data_dir
-        self.dataset = datasetsV.MNIST(self.data_dir, train=training, download=True, transform=trsfm)
-        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
-
+from torchaudio import datasets as datasets, load
 
 class YesNoDataLoader(BaseDataLoader):
     """
@@ -46,7 +31,7 @@ class YesNoDataLoader(BaseDataLoader):
             return tensors, targets
 
         self.data_dir = data_dir
-        self.dataset = datasetsA.YESNO(self.data_dir, download=True)
+        self.dataset = datasets.YESNO(self.data_dir, download=True)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers, collate_fn=collate_fn)
 
 class MainDataLoader(BaseDataLoader):
