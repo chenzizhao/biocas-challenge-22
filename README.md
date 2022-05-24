@@ -4,9 +4,19 @@ This is the source code our submission in response to [IEEE BioCAS 2022 Grand ch
 
 Please submit an issue if you have a question.
 
-## Set up
+## Set up for development
 
-Step 1: Clone this repository.
+Step 1: The raw data are provided <https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound>, in the form of .wav and .json (as illustrated in `testcase`). Clone the data [repo](https://github.com/chenzizhao/SPRSound/) and the source code [repo](https://github.com/chenzizhao/biocas-challenge-22/).
+
+My folder structure is the following:
+
+```
+Projects
+  |-- SPRSound
+      | ...
+  |-- biocas-challenge-22
+      | ...
+```
 
 Step 2: Initialize the dependency with `conda`. The main dependency is `torch` and `torchaudio`.
 
@@ -16,7 +26,13 @@ conda create --name biocas --file environment.yml
 conda activate biocas
 ```
 
-Step 3: Run mini test cases as provided by the organizers.
+Step 3: Take a look at `config_resp.json` first and run the following. This will train a basic model for Task 2-1.
+
+```shell
+python train.py -c config_resp.json
+```
+
+Step 4: Run mini test cases as provided by the organizers.
 
 TODO work in progress
 
@@ -36,33 +52,9 @@ Both lines above don't work yet. The following works:
 python main.py -c config_resp.json -r saved/models/Audio_Resp_21/0523_235733/model_best.pth
 ```
 
-## Development
+## Notes on training
 
-### Data preprocessing
-
-The raw data are provided <https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound>, in the form of .wav and .json (as illustrated in `testcase`).
-
-Step 1: Clone the data [repo](https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound). My folder structure is the following:
-
-```
-Projects
-  |-- SPRSound
-      | ...
-  |-- biocas-challenge-22
-      | ...
-```
-
-Step 2:
-
-TODO 
-
-At this moment, we only have Task 2-1 available.
-
-add rec_info.csv and Datasets.py (link to my branch of dataset)
-
-### Train and test
-
-The main drivers are `train.py` and `test.py` in the root folder. 
+The main drivers are `train.py` and `test.py` in the root folder.
 You may want to pass in hyper parameters in CLI, alternatively modify the `config.json` file. You can tweak arch/loss/metric in the `model/` folder. More in [Usage](#usage) section. Particularly, you may find this useful:
 
 ```shell
@@ -70,7 +62,7 @@ python train.py -c config_resp.json
 python test.py -c config_resp.json -r saved/model/..best../model_best.pth
 ```
 
-### Visualize with Tensorboard
+You can also visualize and monitor progress with Tensorboard:
 
 ```shell
 tensorboard --logdir saved/log/..model../
@@ -78,7 +70,7 @@ tensorboard --logdir saved/log/..model../
 
 More here [Tensorboard Visualization](#tensorboard-visualization)
 
-### Update dependency
+To add/update dependency, use:
 
 ```shell
 conda install scipy
