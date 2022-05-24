@@ -24,7 +24,7 @@
             "amsgrad": true
         }
     },
-    "loss": "nll_loss",
+    "loss": "cross_entropy",
     "metrics": [
         "accuracy", "top_k_acc"
     ],
@@ -47,10 +47,10 @@
 
         "tensorboard": true
     },
-    
+
     "main": {
-        "task_level": 1,
-        "wav_dir": "testcase/task1_wav/",
-        "out_file": "testcase/my_output/task11_output.json"
+        "task_level": 21,
+        "wav_dir": "testcase/task2_wav/",
+        "out_file": "testcase/my_output/task21_output.json"
     }
 }

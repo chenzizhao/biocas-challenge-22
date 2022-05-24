@@ -13,3 +13,12 @@ class YesNoModel(BaseModel):
         x = F.relu(self.fc1(x))
         x = F.tanh(self.fc2(x))
         return x
+
+class Resp21Model(BaseModel):
+    def __init__(self):
+        super().__init__()
+        self.fc = nn.Linear(122880, 3)
+        # TODO
+
+    def forward(self, x):
+        return self.fc(x)

@@ -30,6 +30,12 @@ which is just a few lines in the form of
 python3 main.py --task 11 --wav /path/to/task1_wav/ --out /path/to/task11_output.json
 ```
 
+Both lines above don't work yet. The following works:
+
+```shell
+python main.py -c config_resp.json -r saved/models/Audio_Resp_21/0523_235733/model_best.pth
+```
+
 ## Development
 
 ### Data preprocessing
@@ -41,22 +47,27 @@ Step 1: Clone the data [repo](https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSou
 ```
 Projects
   |-- SPRSound
+      | ...
   |-- biocas-challenge-22
+      | ...
 ```
 
 Step 2:
 
-TODO add rec_info.csv and Datasets.py (link to my branch of dataset)
+TODO 
+
+At this moment, we only have Task 2-1 available.
+
+add rec_info.csv and Datasets.py (link to my branch of dataset)
 
 ### Train and test
 
 The main drivers are `train.py` and `test.py` in the root folder. 
-You may want to pass in hyper parameters in CLI, alternatively modify the `config.json` file.
-More in [Usage](#usage) section. Particularly, you may find this useful:
+You may want to pass in hyper parameters in CLI, alternatively modify the `config.json` file. You can tweak arch/loss/metric in the `model/` folder. More in [Usage](#usage) section. Particularly, you may find this useful:
 
 ```shell
-python train.py -c config.json
-python test.py -c config.json -r saved/model/..best../model_best.pth
+python train.py -c config_resp.json
+python test.py -c config_resp.json -r saved/model/..best../model_best.pth
 ```
 
 ### Visualize with Tensorboard

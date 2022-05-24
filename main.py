@@ -1,9 +1,3 @@
-# TODO
-
-print("todo: pending something similar to test.py")
-# exit(0)
-
-
 import argparse
 import torch
 from tqdm import tqdm
@@ -26,6 +20,7 @@ def main(config):
     out_file = config['main']['out_file']
     assert task_level in (11,12,21,22), "Task level must be in (11,12,21,22)"
     
+    assert task_level == 21, "We only support DataLoader for task 2-1 right now"
 
     # setup data_loader instances
     data_loader = module_data.MainDataLoader(
@@ -41,10 +36,6 @@ def main(config):
     model = config.init_obj('arch', module_arch)
     logger.info(model)
 
-    # get function handles of loss and metrics
-    loss_fn = getattr(module_loss, config['loss'])
-    metric_fns = [getattr(module_metric, met) for met in config['metrics']]
-
     logger.info('Loading checkpoint: {} ...'.format(config.resume))
     checkpoint = torch.load(config.resume)
     state_dict = checkpoint['state_dict']
@@ -57,36 +48,15 @@ def main(config):
     model = model.to(device)
     model.eval()
 
-    total_loss = 0.0
-    total_metrics = torch.zeros(len(metric_fns))
+    output_log = {}
 
     with torch.no_grad():
-        for i, (data, target) in enumerate(tqdm(data_loader)):
-            data, target = data.to(device), target.to(device)
+        for i, (wav_name, data) in enumerate(tqdm(data_loader)):
+            wav_name = wav_name[0] # not sure why wav_name is a singleton tuple
+            data = data.to(device)
             output = model(data)
-
-            #
-            # save sample images, or do something with output here
-            #
-
-            # TODO 
-            output_log = output
-
-            # computing loss, metrics on test set
-            loss = loss_fn(output, target)
-            batch_size = data.shape[0]
-            total_loss += loss.item() * batch_size
-            for i, metric in enumerate(metric_fns):
-                total_metrics[i] += metric(output, target) * batch_size
-
-    n_samples = len(data_loader.sampler)
-    log = {'loss': total_loss / n_samples}
-    log.update({
-        met.__name__: total_metrics[i].item() / n_samples for i, met in enumerate(metric_fns)
-    })
-    logger.info(log)
-
-    # TODO same to output
+            pred = torch.argmax(output).item()
+            output_log[wav_name] = data_loader.CLASSES[pred]
     write_json(output_log, out_file)
     logger.info("Write output to {}".format(out_file))
 
