@@ -2,11 +2,9 @@
 
 This is the source code our submission in response to [IEEE BioCAS 2022 Grand challenge on Respiratory Sound Classification](https://yongfu-li.github.io/biocas_contest_2022/contest.html).
 
-Please submit an issue if you have a question.
-
 ## Set up for development
 
-Step 1: The raw data are provided <https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound>, in the form of .wav and .json (as illustrated in `testcase`). Clone this code [repo](https://github.com/chenzizhao/biocas-challenge-22/) which contains the raw data & the processed data.
+Step 1: The raw data are provided <https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound>, in the form of .wav and .json (as illustrated in `testcase`). Clone this code [repo](https://github.com/chenzizhao/biocas-challenge-22/) which contains the raw data, preprocessing script and our model.
 
 Step 2: Initialize the dependency with `conda`. The main dependency is `torch` and `torchaudio`.
 
@@ -51,8 +49,10 @@ python main.py -c config_resp.json -r saved/models/Audio_Resp_21/0523_235733/mod
 
 ## Notes on training
 
+Checkout a visual for how the data flows in this repository. [Drawing](https://docs.google.com/drawings/d/1aEftpkjiR3YyvFvlrXHQfq8i23ZswIuHN55NdQemVbM/edit?usp=sharing).
+
 The main drivers are `train.py` and `test.py` in the root folder.
-You may want to pass in hyper parameters in CLI, alternatively modify the `config.json` file. You can tweak arch/loss/metric in the `model/` folder. More in [Usage](#usage) section. Particularly, you may find this useful:
+You may want to pass in hyper parameters in CLI, or alternatively modify the `config.json` file. You can modify `data/preprocess.py` (remember to regenerate) and tweak arch/loss/metric in the `model/` folder. More in [Usage](#usage) section. Particularly, you may find this useful:
 
 ```shell
 python train.py -c config_resp.json
@@ -65,7 +65,7 @@ You can also visualize and monitor progress with Tensorboard:
 tensorboard --logdir saved/log/..model../
 ```
 
-More here [Tensorboard Visualization](#tensorboard-visualization)
+More [Tensorboard Visualization](#tensorboard-visualization)
 
 To add/update dependency, use:
 
@@ -74,6 +74,7 @@ conda install scipy
 conda remove scipy
 conda clean -a
 conda env export > environment.yml
+pip freeze > requirements.txt
 ```
 
 ## Acknowledegment
