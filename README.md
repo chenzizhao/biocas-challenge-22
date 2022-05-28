@@ -21,10 +21,10 @@ cd data/SPRSound/
 python preprocess.py
 ```
 
-Step 4: Take a look at `config_resp.json` first and run the following. This will train a basic model for Task 2-1.
+Step 4: Take a look at `config_task21.json` first and run the following. This will train a basic model for Task 2-1.
 
 ```shell
-python train.py -c config_resp.json
+python train.py -c config_task21.json
 ```
 
 Step 5: Run mini test cases as provided by the organizers.
@@ -44,7 +44,7 @@ python3 main.py --task 11 --wav /path/to/task1_wav/ --out /path/to/task11_output
 Neither lines above work yet. The following works:
 
 ```shell
-python main.py -c config_resp.json -r saved/models/Audio_Resp_21/0523_235733/model_best.pth
+python main.py -c config_task21.json -r saved/models/Audio_Resp_21/0523_235733/model_best.pth
 ```
 
 ## Notes on training
@@ -55,8 +55,8 @@ The main drivers are `train.py` and `test.py` in the root folder.
 You may want to pass in hyper parameters in CLI, or alternatively modify the `config.json` file. You can modify `data/preprocess.py` (remember to regenerate) and tweak arch/loss/metric in the `model/` folder. More in [Usage](#usage) section. Particularly, you may find this useful:
 
 ```shell
-python train.py -c config_resp.json
-python test.py -c config_resp.json -r saved/model/..best../model_best.pth
+python train.py -c config_task21.json
+python test.py -c config_task21.json -r saved/model/..best../model_best.pth
 ```
 
 You can also visualize and monitor progress with Tensorboard:
@@ -66,6 +66,8 @@ tensorboard --logdir saved/log/..model../
 ```
 
 More [Tensorboard Visualization](#tensorboard-visualization)
+
+We keep track of various metrics such as `loss`, `accuracy`, `sensitivity`, `specifity` and a combined `score`. The metric we care about is `score_task1` and `score_task2` for the validation split. For reference, past year winners have ~0.85 `score`. More data in the Benchmark Tab of the challenge website.
 
 To add/update dependency, use:
 
