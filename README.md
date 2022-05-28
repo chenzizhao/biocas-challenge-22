@@ -6,17 +6,7 @@ Please submit an issue if you have a question.
 
 ## Set up for development
 
-Step 1: The raw data are provided <https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound>, in the form of .wav and .json (as illustrated in `testcase`). Clone the data [repo](https://github.com/chenzizhao/SPRSound/) and the source code [repo](https://github.com/chenzizhao/biocas-challenge-22/).
-
-My folder structure is the following:
-
-```
-Projects
-  |-- SPRSound
-      | ...
-  |-- biocas-challenge-22
-      | ...
-```
+Step 1: The raw data are provided <https://github.com/SJTU-YONGFU-RESEARCH-GRP/SPRSound>, in the form of .wav and .json (as illustrated in `testcase`). Clone this code [repo](https://github.com/chenzizhao/biocas-challenge-22/) which contains the raw data & the processed data.
 
 Step 2: Initialize the dependency with `conda`. The main dependency is `torch` and `torchaudio`.
 
