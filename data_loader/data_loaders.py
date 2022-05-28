@@ -37,11 +37,16 @@ class YesNoDataLoader(BaseDataLoader):
         self.dataset = datasets.YESNO(self.data_dir, download=True)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers, collate_fn=collate_fn)
 
+
+# Important Assumption (used in model/metric.py)
+# Normal is always index 0
+# PQ, if exists, is index 1
+
 class Resp21DataLoader(BaseDataLoader):
 
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True):
-        self.CLASSES = ('Normal', 'Adventitious', 'Poor Quality')
-        self.CLASS2INT = {'Normal':0, 'Adventitious':1, 'Poor Quality':2}
+        self.CLASSES = ('Normal', 'Poor Quality', 'Adventitious')
+        self.CLASS2INT = {label:i for (i, label) in enumerate(self.CLASSES)}
 
         def collate_fn(batch):
             tensors, targets = [], []
