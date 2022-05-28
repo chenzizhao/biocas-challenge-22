@@ -5,24 +5,18 @@ import pandas as pd
 
 
 class Resp21Dataset(Dataset):
-    """
-    Dataset for Task level 21
-    """
-
     def __init__(self, data_dir):
-        rec_info_dir = join(data_dir, 'processed/rec_info.csv')
-        self.ann = pd.read_csv(rec_info_dir)
+        self.csv = pd.read_csv(join(data_dir, 'task2.csv'))
         self.audio_dir = join(data_dir, 'wav')
 
     def __len__(self):
-        return len(self.ann)
+        return len(self.csv)
 
     def __getitem__(self, index):
-        entry = self.ann.iloc[index]
+        entry = self.csv.iloc[index]
         wav_name = entry['wav_name']
         audio_sample_path = join(self.audio_dir, wav_name)
         wav, sample_rate = load(audio_sample_path)
-        (age, gender, loc) = entry['age'], entry['gender'], entry['loc']
         target = entry['label_21']
         return wav, target
 
