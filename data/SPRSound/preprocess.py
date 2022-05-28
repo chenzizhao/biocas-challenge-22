@@ -16,7 +16,9 @@ from torchaudio import load
 def parse_json2(json_dir):
     ls = []
     for fname in listdir('json'):
-        entry = fname[:-5].split('_')
+        name = fname[:-5]
+        wav_name = name + '.wav'
+        entry = name.split('_')
         
         patient_id = int(entry[0])
         age = float(entry[1])
@@ -33,11 +35,11 @@ def parse_json2(json_dir):
         else:
             label_21 = label_22
 
-        new_entry = (fname, patient_id, age, gender, loc, rec_id, label_21, label_22)
+        new_entry = (wav_name, patient_id, age, gender, loc, rec_id, label_21, label_22)
         ls.append(new_entry)
     
     df = pd.DataFrame(ls, columns=[
-        'fname', 'patient_id', 'age', 'gender', 'loc', 'rec_id', 
+        'wav_name', 'patient_id', 'age', 'gender', 'loc', 'rec_id', 
         'label_21', 'label_22'])
     return df
 

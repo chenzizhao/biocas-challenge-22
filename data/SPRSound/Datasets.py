@@ -19,12 +19,12 @@ class Resp21Dataset(Dataset):
 
     def __getitem__(self, index):
         entry = self.ann.iloc[index]
-        wav_name = entry['fname'][:-5]+'.wav'
+        wav_name = entry['wav_name']
         audio_sample_path = join(self.audio_dir, wav_name)
         wav, sample_rate = load(audio_sample_path)
         (age, gender, loc) = entry['age'], entry['gender'], entry['loc']
         target = entry['label_21']
-        return wav, (age, gender, loc), target
+        return wav, target
 
 if __name__ == "__main__":
     r21 = Resp21Dataset('.')

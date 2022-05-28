@@ -46,8 +46,8 @@ class Resp21DataLoader(BaseDataLoader):
             tensors, targets = [], []
 
             # Gather in lists, and encode labels as indices
-            for waveform, _, label in batch:
-                tensors += [waveform]
+            for wave, label in batch:
+                tensors += [wave]
                 targets += [torch.LongTensor([self.CLASS2INT[label]])]
             # Group the list of tensors into a batched tensor
             # -- again hacking here, we might want variable length
