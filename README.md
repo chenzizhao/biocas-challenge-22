@@ -16,13 +16,20 @@ conda create --name biocas --file environment.yml
 conda activate biocas
 ```
 
-Step 3: Take a look at `config_resp.json` first and run the following. This will train a basic model for Task 2-1.
+Step 3: Preprocess data. This generates files ready to be read by `data/SPRSound/Datasets.py`, which is then consumed by `data_loader/data_loaders.py`.
+
+```shell
+cd data/SPRSound/
+python preprocess.py
+```
+
+Step 4: Take a look at `config_resp.json` first and run the following. This will train a basic model for Task 2-1.
 
 ```shell
 python train.py -c config_resp.json
 ```
 
-Step 4: Run mini test cases as provided by the organizers.
+Step 5: Run mini test cases as provided by the organizers.
 
 TODO work in progress
 
@@ -36,7 +43,7 @@ which is just a few lines in the form of
 python3 main.py --task 11 --wav /path/to/task1_wav/ --out /path/to/task11_output.json
 ```
 
-Both lines above don't work yet. The following works:
+Neither lines above work yet. The following works:
 
 ```shell
 python main.py -c config_resp.json -r saved/models/Audio_Resp_21/0523_235733/model_best.pth
