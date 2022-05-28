@@ -47,7 +47,7 @@ def speficity(output, target):
 def score(output, target, se_fn):
     se = se_fn(output, target)
     sp = speficity(output, target)
-    avg_score = se + sp / 2
+    avg_score = (se + sp) / 2
     har_score = (2*se*sp) / (se + sp)
     # TODO: division by zero error
     return (avg_score + har_score) / 2
