@@ -4,6 +4,7 @@ from base import BaseDataLoader
 import torch
 from torch.utils.data import Dataset
 import torch.nn.functional as F
+from data.SPRSound.preprocess import preprocess
 from torchaudio import datasets, load
 import importlib
 
@@ -81,6 +82,8 @@ class MainDataLoader(BaseDataLoader):
                 fname = self.fnames[index]
                 wav_path = join(self.audio_dir, fname)
                 wav, sample_rate = load(wav_path)
+                # return preprocess(wav)
+
                 # hack
                 wav = F.pad(wav, (0, 122880-wav.shape[-1]), mode='constant', value=0.)
                 return fname, wav

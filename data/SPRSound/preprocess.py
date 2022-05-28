@@ -1,9 +1,5 @@
 """
 TODO
-"""
-
-
-"""
 This file extracts patients' info from the (name of) json files.
 """
 
@@ -12,6 +8,15 @@ from os.path import join
 import json
 import pandas as pd
 from torchaudio import load
+
+def preprocess(wav):
+    """
+    This function will be exported to main.py
+    """
+    processed = wav
+    # TODO
+    # could be a image
+    return processed
 
 def parse_json2(json_dir):
     ls = []
