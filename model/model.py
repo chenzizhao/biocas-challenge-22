@@ -39,7 +39,7 @@ class LightCNN(BaseModel):
         self.drop4 = nn.Dropout(0.075)
         self.drop5 = nn.Dropout(0.0325)
 
-        self.softmax = nn.Softmax(outdim)
+        self.softmax = nn.Softmax()
         self.relu = nn.ReLU()
 
     def forward(self, x):
