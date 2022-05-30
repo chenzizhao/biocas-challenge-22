@@ -67,6 +67,13 @@ tensorboard --logdir saved/log/..model../
 
 More [Tensorboard Visualization](#tensorboard-visualization)
 
+Or use our Weigh and Bias project (send me your wandb login email to get an invitation).
+Note that wandb will take an extra minute or so to upload stuff. So I recommend only enable wandb when you'd like to share with the team. When you are testing your model locally, I'd use tensorboard instead (the default).
+
+```shell
+python train.py -c config_task21.json --wandb True
+```
+
 We keep track of various metrics such as `loss`, `accuracy`, `sensitivity`, `specifity` and a combined `score`. The metric we care about is `score_task1` and `score_task2` for the validation split. For reference, past year winners have ~0.85 `score`. More data in the Benchmark Tab of the challenge website.
 
 To add/update dependency, use:

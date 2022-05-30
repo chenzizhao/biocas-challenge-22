@@ -19,6 +19,10 @@ torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
 
 def main(config):
+    if config['trainer']['wandb']:
+        import wandb
+        wandb.init(project='biocas', entity="biocas22")
+        wandb.tensorboard.patch(save=True, tensorboard_x=True, pytorch=True)
     logger = config.get_logger('train')
 
     # setup data_loader instances
@@ -52,6 +56,8 @@ def main(config):
                       lr_scheduler=lr_scheduler)
 
     trainer.train()
+    if config['trainer']['wandb']:
+        wandb.finish()
 
 
 if __name__ == '__main__':
@@ -67,7 +73,8 @@ if __name__ == '__main__':
     CustomArgs = collections.namedtuple('CustomArgs', 'flags type target')
     options = [
         CustomArgs(['--lr', '--learning_rate'], type=float, target='optimizer;args;lr'),
-        CustomArgs(['--bs', '--batch_size'], type=int, target='data_loader;args;batch_size')
+        CustomArgs(['--bs', '--batch_size'], type=int, target='data_loader;args;batch_size'),
+        CustomArgs(['--wandb'], type=bool, target='trainer;wandb')
     ]
     config = ConfigParser.from_args(args, options)
     main(config)
