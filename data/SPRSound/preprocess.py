@@ -116,12 +116,9 @@ def preprocess_mel(wav):
     """
     
     """
-    y, sr = librosa.load(wav)
-    y = Normalization(y)
-    mel_spect = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=2048, hop_length=1024)
-    mel_spect = librosa.power_to_db(mel_spect, ref=np.max)
-    processed = mel_spect
-       
+    processed = wav
+    # TODO
+    # could be a image
     return processed
 
 
