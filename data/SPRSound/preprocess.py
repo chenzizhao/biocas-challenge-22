@@ -27,9 +27,9 @@ def preprocess_norm(wav):
        
     return processed
 
-def preprocess_fft(wav):
+def preprocess_fft(wav):  
     """
-    This function will be exported to main.py
+    processed shape: [200,1]
     """
     y, sr = librosa.load(wav)
     y = Normalization(y)
