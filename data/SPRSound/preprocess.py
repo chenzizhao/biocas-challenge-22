@@ -31,7 +31,7 @@ def preprocess_fft(wav):
     """
     This function will be exported to main.py
     """
-    y, sr = librosa.load('wav')
+    y, sr = librosa.load(wav)
     y = Normalization(y)
     n_fft = 2048
     ft = np.abs(librosa.stft(y[:n_fft], hop_length = n_fft+1))
