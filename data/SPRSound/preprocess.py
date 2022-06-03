@@ -83,7 +83,7 @@ def preprocess_fft(wav):
 
 def preprocess_stft(wav):
     """
-    This function will be exported to main.py
+    padding to 150 * 150 in the dataloder
     """
     y, sr = librosa.load(wav)
     y = Normalization(y)
@@ -109,9 +109,9 @@ def preprocess_wavelet(wav):
     return process
 
 
-def preprocess_mel(wav):
+def preprocess_mel(wav): 
     """
-    This function will be exported to main.py
+    
     """
     y, sr = librosa.load(wav)
     y = Normalization(y)
