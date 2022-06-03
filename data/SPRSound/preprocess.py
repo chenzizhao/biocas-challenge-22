@@ -17,6 +17,42 @@ def Normalization(x):
            
     return x
 
+def butter_bandpass(lowcut, highcut, fs, order=5):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = butter(order, [low, high], btype='band')
+    return b, a
+ 
+def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
+    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
+    y = lfilter(b, a, data)
+    return y
+
+def wavelet(sig):
+    cA, out = pywt.dwt(sig, 'db8')
+    cA, out = pywt.dwt(cA, 'db8')
+    cA, out = pywt.dwt(cA, 'db8')
+    A = cA
+    
+    for i in range(6):
+        cA, cD = pywt.dwt(A, 'db8')
+        A = cA
+        out = np.hstack((out,cD))
+
+    out = np.hstack((out,A))
+        
+    return out
+
+def reshape(matrix):
+    num = matrix.shape[0]
+    length = math.ceil(np.sqrt(num))
+    zero = np.zeros([np.square(length)-num,])
+    matrix = np.concatenate((matrix,zero))
+    out = matrix.reshape((length,length))
+    return out
+
+
 def preprocess_norm(wav):
     """
     This function will be exported to main.py
@@ -51,6 +87,21 @@ def preprocess_stft(wav):
        
     return processed
 
+def preprocess_wavelet(wav):
+    
+    sig, fs = librosa.load(wav)
+    sig = Normalization(sig)
+    sig = butter_bandpass_filter(sig, 1, 3999, fs, order=3)
+    wave = wavelet(sig)
+    xmax=max(wave)
+    xmin=min(wave)
+    wave=(255-0)*(wave-xmin)/(xmax-xmin)+0       
+    wave = reshape(wave)
+    #display.specshow(wave)
+    process = wave
+    
+    return process
+
 
 def preprocess_mel(wav):
     """
@@ -63,6 +114,8 @@ def preprocess_mel(wav):
     processed = mel_spect
        
     return processed
+
+
 
 if __name__ == '__main__':
 
