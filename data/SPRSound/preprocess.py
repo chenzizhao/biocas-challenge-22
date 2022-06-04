@@ -1,3 +1,8 @@
+'''
+for recording tasks: try preprocee_fft, preprocess_norm maybe (preprocee_stft,preprocess_mel,preprocess_wavelet)
+for event tasks: try preprocee_stft,preprocess_mel,preprocess_wavelet
+'''
+
 from os import listdir
 from os.path import join
 from torchaudio import load
@@ -60,9 +65,7 @@ def reshape(matrix):
 
 
 def preprocess_norm(wav):
-    """
-    This function will be exported to main.py
-    """
+ 
     y, sr = librosa.load(wav)
     y = Normalization(y)
     processed = Normalization(y)
@@ -82,9 +85,7 @@ def preprocess_fft(wav):
     return processed
 
 def preprocess_stft(wav):
-    """
-    padding to 150 * 150 in the dataloder
-    """
+
     y, sr = librosa.load(wav)
     y = Normalization(y)
     spec = np.abs(librosa.stft(y, hop_length=512))
@@ -94,7 +95,9 @@ def preprocess_stft(wav):
     return processed
 
 def preprocess_wavelet(wav):
-    
+    """
+    suggesting padding to 150 * 150 in the dataloder
+    """
     sig, fs = librosa.load(wav)
     sig = Normalization(sig)
     sig = butter_bandpass_filter(sig, 1, 3999, fs, order=3)
