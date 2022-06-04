@@ -1,11 +1,9 @@
-
-import os
-from PIL import Image
+import cv2
 
 def preprocess(image):
 
-    im = Image.open(image)
-    process = im.resize((224, 224), Image.ANTIALIAS)
+    img=cv2.imread(image)
+    process=cv2.resize(img,(224,224))
     
     return process
 
