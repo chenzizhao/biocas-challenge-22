@@ -1,3 +1,7 @@
+'''
+resize image to 224*224
+'''
+
 import cv2
 
 def preprocess(image):
