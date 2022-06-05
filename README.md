@@ -18,7 +18,7 @@ Step 3: Preprocess data. This generates files ready to be read by `data/SPRSound
 
 ```shell
 cd data/SPRSound/
-python preprocess.py
+python preprocess.py # this should populate the data/SPRSound/processed/ folder
 ```
 
 Step 4: Take a look at `config_task21.json` first and run the following. This will train a basic model for Task 2-1.
