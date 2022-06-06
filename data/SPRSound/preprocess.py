@@ -1,3 +1,7 @@
+'''
+Three functions (save_prc_stft,save_prc_wavelet,save_prc_mel) that transform the wave to the image in the specific folder
+One function preprocess_img that preprosses the images above before read by dataloader 
+'''
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io.wavfile as wav
@@ -6,6 +10,7 @@ import math
 import os
 import librosa.display as display
 from scipy.signal import butter, lfilter
+import cv2
 
 def butter_bandpass(lowcut, highcut, fs, order=5):
     nyq = 0.5 * fs
@@ -116,7 +121,10 @@ def preprocess_img(image):
 
     img=cv2.imread(image)
     process=cv2.resize(img,(224,224))
-    return process
+    transf = transforms.ToTensor()
+    img_tensor = transf(img)
+    
+    return img_tensor
 
 if __name__ == '__main__':
 
