@@ -1,7 +1,3 @@
-'''
-Three functions (save_prc_stft,save_prc_wavelet,save_prc_mel) that transform the wave to the image in the specific folder
-One function preprocess_img that preprosses the images above before read by dataloader 
-'''
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io.wavfile as wav
@@ -104,10 +100,11 @@ def save_pic_stft(wav_dir,save_dir):
         plt.savefig(save_dir+'/'+file[:-3]+'png', cmap='Greys_r')
         plt.close()
         
- def save_pic_mel(wav_dir,save_dir):
+        
+def save_pic_mel(wav_dir,save_dir):
     
     for file in os.listdir(wav_dir):           
-        sr,y = wav.read(wav_dir+'/'+file)
+        y, sr = librosa.load(wav_dir+'/'+file)
         mel_spect = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=2048, hop_length=1024)
         mel_spect = librosa.power_to_db(mel_spect, ref=np.max)
         log_melspec = librosa.amplitude_to_db(mel_spect)
@@ -121,17 +118,15 @@ def save_pic_stft(wav_dir,save_dir):
         plt.close()
 
 
-        
-def preprocess_img(image):
 
-    img=cv2.imread(image)
-    process=cv2.resize(img,(224,224))
-    transf = transforms.ToTensor()
-    img_tensor = transf(img)
-    
-    return img_tensor
 
 if __name__ == '__main__':
-    save_pic_wavelet('','')
-    save_pic_stft('','')
-    save_pic_mel('','')
+    
+    clip = ''
+    processed_wavelet = ''
+    processed_stft = ''
+    processed_mel = ''
+    
+    save_pic_wavelet(clip,processed_wavelet)
+    save_pic_stft(clip,processed_stft)
+    save_pic_mel(clip,processed_mel)
