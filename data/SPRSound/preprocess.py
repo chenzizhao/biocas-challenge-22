@@ -73,6 +73,8 @@ def save_pic_wavelet(wav_dir,save_dir):
         wave=(255-0)*(wave-xmin)/(xmax-xmin)+0       
         wave = reshape(wave)
         display.specshow(wave)
+        plt.rcParams['figure.dpi'] = 100  
+        plt.rcParams['figure.figsize'] = (2.24, 2.24)
         plt.gca().xaxis.set_major_locator(plt.NullLocator())
         plt.gca().yaxis.set_major_locator(plt.NullLocator())
         plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
@@ -93,7 +95,8 @@ def save_pic_stft(wav_dir,save_dir):
         display.specshow(librosa.amplitude_to_db(stft[0:int(len(stft)/2),:],ref=np.max),y_axis='log',x_axis='time')
         # else:
         #display.specshow(librosa.amplitude_to_db(stft,ref=np.max),y_axis='log',x_axis='time')
-
+        plt.rcParams['figure.dpi'] = 100  
+        plt.rcParams['figure.figsize'] = (2.24, 2.24)
         plt.gca().xaxis.set_major_locator(plt.NullLocator())
         plt.gca().yaxis.set_major_locator(plt.NullLocator())
         plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
@@ -104,12 +107,14 @@ def save_pic_stft(wav_dir,save_dir):
  def save_pic_mel(wav_dir,save_dir):
     
     for file in os.listdir(wav_dir):           
-        y, sr = librosa.load(wav_dir+'/'+file)
+        sr,y = wav.read(wav_dir+'/'+file)
         mel_spect = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=2048, hop_length=1024)
         mel_spect = librosa.power_to_db(mel_spect, ref=np.max)
         log_melspec = librosa.amplitude_to_db(mel_spect)
         # librosa.display.specshow(librosa.amplitude_to_db(mel_spect[0:int(len(mel_spect)/2),:],ref=np.max),y_axis='log',x_axis='time')
-        librosa.display.specshow(mel_spect[:50], y_axis='mel', fmax=8000, x_axis='time');
+        librosa.display.specshow(mel_spect[:50], y_axis='mel', fmax=8000, x_axis='time')
+        plt.rcParams['figure.dpi'] = 100  
+        plt.rcParams['figure.figsize'] = (2.24, 2.24)
         plt.margins(0,0)
         plt.axis('off')
         plt.savefig(save_dir+'/'+file[:-3]+'png', cmap='Greys_r')
@@ -127,5 +132,6 @@ def preprocess_img(image):
     return img_tensor
 
 if __name__ == '__main__':
-
-    print('todo.')
+    save_pic_wavelet('','')
+    save_pic_stft('','')
+    save_pic_mel('','')
