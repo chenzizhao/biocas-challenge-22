@@ -1,38 +1,35 @@
-'''
-for recording tasks: try preprocee_fft, preprocess_norm maybe (preprocee_stft,preprocess_mel,preprocess_wavelet)
-for event tasks: try preprocee_stft,preprocess_mel,preprocess_wavelet
-
+"""
 The `preprocess` function will be exported to main.py
-'''
 
+Recording (Task 2-1 and Task 2-2):
+- preprocee_fft,
+- preprocess_norm,
+- maybe (preprocee_stft, preprocess_mel, preprocess_wavelet)
+
+Event (Task 1-1 and Task 2-1):
+- preprocee_stft
+- preprocess_mel
+- preprocess_wavelet
+
+"""
+
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+import torch
+from torchaudio import load
+import pywt
+import librosa.display as display
+from scipy.signal import butter, lfilter
 from os import listdir
 from os.path import join
-from torchaudio import load
-import numpy as np
-import matplotlib.pyplot as plt
-import pywt
-import math
-import librosa
-from scipy.signal import butter, lfilter
-#import librosa.display as display
-import torch
-import librosa
+import tempfile
 from tqdm import tqdm
 
 def normalize(x):
-    maximum = torch.max(x, dim=-1, keepdim=True)[0]
-    minimum = torch.min(x, dim=-1, keepdim=True)[0]
+    maximum = np.max(x)
+    minimum = np.min(x)
     return (x-minimum) / (maximum - minimum)
-
-def Normalization(x):
-    x = x.astype(float)
-    max_x = max(x)
-    min_x = min(x)
-    for i in range(len(x)):
-        
-        x[i] = float(x[i]-min_x)/(max_x-min_x)
-           
-    return x
 
 def butter_bandpass(lowcut, highcut, fs, order=5):
     nyq = 0.5 * fs
@@ -69,81 +66,64 @@ def reshape(matrix):
     out = matrix.reshape((length,length))
     return out
 
-
-def preprocess_norm(wav):
- 
-    y, sr = librosa.load(wav)
-    y = Normalization(y)
-    processed = Normalization(y)
-       
-    return processed
-
-def preprocess_fft(wav):  
-    """
-    processed shape: [200,1]
-    """
-    y, sr = librosa.load(wav)
-    y = Normalization(y)
-    n_fft = 2048
-    ft = np.abs(librosa.stft(y[:n_fft], hop_length = n_fft+1))
-    processed = ft[:200]
-       
-    return processed
-
-def preprocess_stft(wav):
-
-    y, sr = librosa.load(wav)
-    y = Normalization(y)
-    spec = np.abs(librosa.stft(y, hop_length=512))
-    spec = librosa.amplitude_to_db(spec, ref=np.max)
-    processed = spec
-       
-    return processed
-
-def preprocess_wavelet(wav):
-    """
-    suggesting padding to 150 * 150 in the dataloder
-    """
-    sig, fs = librosa.load(wav)
-    sig = Normalization(sig)
-    sig = butter_bandpass_filter(sig, 1, 3999, fs, order=3)
+def preprocess_wavelet(wav, sample_freq=8000):
+    sig = wav
+    fs = sample_freq
+    sig = normalize(sig)
+    if fs>4000:
+        sig = butter_bandpass_filter(sig, 1, 3999, fs, order=3)
     wave = wavelet(sig)
-    xmax=max(wave)
-    xmin=min(wave)
-    wave=(255-0)*(wave-xmin)/(xmax-xmin)+0       
+    xmax = max(wave)
+    xmin = min(wave)
+    wave = (255-0)*(wave-xmin)/(xmax-xmin)+0
     wave = reshape(wave)
-    #display.specshow(wave)
-    process = wave
+    display.specshow(wave)
+    plt.figure(figsize=(2.24, 2.24), dpi=100)
+    plt.gca().xaxis.set_major_locator(plt.NullLocator())
+    plt.gca().yaxis.set_major_locator(plt.NullLocator())
+    plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
+    plt.margins(0,0)
+
+    # Hack to convert plt.figure to an image tensor
+    tmp = tempfile.NamedTemporaryFile()
+    with open(tmp.name, 'w') as f:
+        plt.savefig(tmp.name + '.png')
+        plt.close()
+        img = plt.imread(tmp.name + '.png')
     
-    return process
-
-
-def preprocess_mel(wav): 
-    """
+    # The image is not terribly useful though. Try uncomment the following:
     
+    plt.imshow(img)
+    plt.show()
+
+    # torch.Size([H, W, C])
+    img_tensor = torch.from_numpy(np.array(img))
+    
+    # convert RGBA to RGB by dropping the last channel
+    img_tensor = img_tensor[:,:,[0,1,2]]
+    
+    # torch.Size([C, H, W])
+    img_tensor = torch.permute(img_tensor, (2, 0, 1))
+    
+    # Float between [0, 1]
+    return img_tensor
+
+def preprocess(wav):
     """
-    wav = normalize(wav)
-    wav = torch.squeeze(wav)
-    # librosa uses np.ndarry exclusively
-    wav = wav.cpu().detach().numpy()
-    n_fft = 2048
-    ft = librosa.stft(wav[:n_fft], hop_length=n_fft+1)
-    ft = ft[:200]
-    # convert back to torch.Tensor
-    processed = torch.from_numpy(ft)
-    processed = torch.abs(processed)
-    processed = torch.squeeze(processed)
-    return processed
-
-
+    Input: wav as a np.ndarray
+    Output: single tensor as input of classifier.
+    --------------------
+    This is a simple wrap function to provide a unifying API
+    """
+    return preprocess_wavelet(wav, sample_freq=8000)
 
 if __name__ == '__main__':
     WAV_DIR = "wav"
-    CLIP_DIR = "clip"
     PROC_DIR = "processed"
 
     for wav_name in tqdm(listdir(WAV_DIR)):
         wav, _ = load(join(WAV_DIR, wav_name))
+        wav = wav.squeeze().cpu().detach().numpy()
         processed = preprocess(wav)
         torch.save(processed, join(PROC_DIR, wav_name))
         # print(processed.shape)
