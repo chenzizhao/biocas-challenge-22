@@ -1,32 +1,16 @@
 '''
-for recording tasks: try preprocee_fft, preprocess_norm maybe (preprocee_stft,preprocess_mel,preprocess_wavelet)
-for event tasks: try preprocee_stft,preprocess_mel,preprocess_wavelet
+Three functions (save_prc_stft,save_prc_wavelet,save_prc_mel) that transform the wave to the image in the specific folder
+One function preprocess_img that preprosses the images above before read by dataloader 
 '''
-
-from os import listdir
-from os.path import join
-from torchaudio import load
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import scipy.io.wavfile as wav
 import pywt
 import math
-import librosa
+import os
+import librosa.display as display
 from scipy.signal import butter, lfilter
-#import librosa.display as display
-
-WAV_DIR = "wav"
-CLIP_DIR = "clip"
-PROC_DIR = "processed"
-
-def Normalization(x):
-    x = x.astype(float)
-    max_x = max(x)
-    min_x = min(x)
-    for i in range(len(x)):
-        
-        x[i] = float(x[i]-min_x)/(max_x-min_x)
-           
-    return x
+import cv2
 
 def butter_bandpass(lowcut, highcut, fs, order=5):
     nyq = 0.5 * fs
@@ -39,6 +23,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = lfilter(b, a, data)
     return y
+
 
 def wavelet(sig):
     cA, out = pywt.dwt(sig, 'db8')
@@ -63,69 +48,90 @@ def reshape(matrix):
     out = matrix.reshape((length,length))
     return out
 
+def Normalization(x):
+    x = x.astype(float)
+    max_x = max(x)
+    min_x = min(x)
+    for i in range(len(x)):
+        
+        x[i] = float(x[i]-min_x)/(max_x-min_x)
+           
+    return x
 
-def preprocess_norm(wav):
- 
-    y, sr = librosa.load(wav)
-    y = Normalization(y)
-    processed = Normalization(y)
-       
-    return processed
 
-def preprocess_fft(wav):  
-    """
-    processed shape: [200,1]
-    """
-    y, sr = librosa.load(wav)
-    y = Normalization(y)
-    n_fft = 2048
-    ft = np.abs(librosa.stft(y[:n_fft], hop_length = n_fft+1))
-    processed = ft[:200]
-       
-    return processed
+def save_pic_wavelet(wav_dir,save_dir):
 
-def preprocess_stft(wav):
+    for file in os.listdir(wav_dir):          
+        fs,sig= wav.read(wav_dir+'/'+file)
+        sig = Normalization(sig)
+        if fs>4000:
+            sig = butter_bandpass_filter(sig, 1, 3999, fs, order=3)
+            
+        wave = wavelet(sig)
+        xmax=max(wave)
+        xmin=min(wave)
+        wave=(255-0)*(wave-xmin)/(xmax-xmin)+0       
+        wave = reshape(wave)
+        display.specshow(wave)
+        plt.rcParams['figure.dpi'] = 100  
+        plt.rcParams['figure.figsize'] = (2.24, 2.24)
+        plt.gca().xaxis.set_major_locator(plt.NullLocator())
+        plt.gca().yaxis.set_major_locator(plt.NullLocator())
+        plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
+        plt.margins(0,0)
+        
+        plt.savefig(save_dir+'/'+file[:-3]+'png', cmap='Greys_r')
+        plt.close()
+  
+def save_pic_stft(wav_dir,save_dir):
 
-    y, sr = librosa.load(wav)
-    y = Normalization(y)
-    spec = np.abs(librosa.stft(y, hop_length=512))
-    spec = librosa.amplitude_to_db(spec, ref=np.max)
-    processed = spec
-       
-    return processed
-
-def preprocess_wavelet(wav):
-    """
-    suggesting padding to 150 * 150 in the dataloder
-    """
-    sig, fs = librosa.load(wav)
-    sig = Normalization(sig)
-    sig = butter_bandpass_filter(sig, 1, 3999, fs, order=3)
-    wave = wavelet(sig)
-    xmax=max(wave)
-    xmin=min(wave)
-    wave=(255-0)*(wave-xmin)/(xmax-xmin)+0       
-    wave = reshape(wave)
-    #display.specshow(wave)
-    process = wave
+    for file in os.listdir(wav_dir):           
+        fs,sig= wav.read(wav_dir+'/'+file)
+        sig = Normalization(sig)
+        # if fs>8000:
+        sig = butter_bandpass_filter(sig, 1, 3999, fs, order=3)
+        stft = librosa.stft(sig, n_fft=int(0.02*fs), hop_length=int(0.01*fs), window='hann')
+        # if fs>8000:
+        display.specshow(librosa.amplitude_to_db(stft[0:int(len(stft)/2),:],ref=np.max),y_axis='log',x_axis='time')
+        # else:
+        #display.specshow(librosa.amplitude_to_db(stft,ref=np.max),y_axis='log',x_axis='time')
+        plt.rcParams['figure.dpi'] = 100  
+        plt.rcParams['figure.figsize'] = (2.24, 2.24)
+        plt.gca().xaxis.set_major_locator(plt.NullLocator())
+        plt.gca().yaxis.set_major_locator(plt.NullLocator())
+        plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
+        plt.margins(0,0)
+        plt.savefig(save_dir+'/'+file[:-3]+'png', cmap='Greys_r')
+        plt.close()
+        
+ def save_pic_mel(wav_dir,save_dir):
     
-    return process
+    for file in os.listdir(wav_dir):           
+        sr,y = wav.read(wav_dir+'/'+file)
+        mel_spect = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=2048, hop_length=1024)
+        mel_spect = librosa.power_to_db(mel_spect, ref=np.max)
+        log_melspec = librosa.amplitude_to_db(mel_spect)
+        # librosa.display.specshow(librosa.amplitude_to_db(mel_spect[0:int(len(mel_spect)/2),:],ref=np.max),y_axis='log',x_axis='time')
+        librosa.display.specshow(mel_spect[:50], y_axis='mel', fmax=8000, x_axis='time')
+        plt.rcParams['figure.dpi'] = 100  
+        plt.rcParams['figure.figsize'] = (2.24, 2.24)
+        plt.margins(0,0)
+        plt.axis('off')
+        plt.savefig(save_dir+'/'+file[:-3]+'png', cmap='Greys_r')
+        plt.close()
 
 
-def preprocess_mel(wav): 
-    """
+        
+def preprocess_img(image):
+
+    img=cv2.imread(image)
+    process=cv2.resize(img,(224,224))
+    transf = transforms.ToTensor()
+    img_tensor = transf(img)
     
-    """
-    y, sr = librosa.load(wav)
-    y = Normalization(y)
-    mel_spect = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=2048, hop_length=1024)
-    mel_spect = librosa.power_to_db(mel_spect, ref=np.max)
-    processed = mel_spect
-       
-    return processed
-
-
+    return img_tensor
 
 if __name__ == '__main__':
-
-    print('todo.')
+    save_pic_wavelet('','')
+    save_pic_stft('','')
+    save_pic_mel('','')
