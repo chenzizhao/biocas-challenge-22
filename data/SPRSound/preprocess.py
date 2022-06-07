@@ -104,7 +104,8 @@ def save_pic_stft(wav_dir,save_dir):
         plt.savefig(save_dir+'/'+file[:-3]+'png', cmap='Greys_r')
         plt.close()
         
- def save_pic_mel(wav_dir,save_dir):
+        
+def save_pic_mel(wav_dir,save_dir):
     
     for file in os.listdir(wav_dir):           
         sr,y = wav.read(wav_dir+'/'+file)
