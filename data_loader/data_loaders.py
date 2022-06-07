@@ -37,29 +37,6 @@ class Resp21DataLoader(BaseDataLoader):
         dataset = Datasets.Resp21Dataset(data_dir)
         super().__init__(dataset, batch_size, shuffle, validation_split, num_workers, collate_fn=collate_fn)
 
-class MainDataLoader(BaseDataLoader):
-
-    def __init__(self, data_dir, batch_size=1, shuffle=False, validation_split=0.0, num_workers=1, training=False):
-        self.CLASSES = ('Normal', 'Adventitious', 'Poor Quality')
-
-        class MainDataSet(Dataset):
-            def __init__(self):
-                self.audio_dir = data_dir
-                self.fnames = listdir(self.audio_dir)
-
-            def __len__(self):
-                return len(self.fnames)
-
-            def __getitem__(self, index):
-                fname = self.fnames[index]
-                wav_path = join(self.audio_dir, fname)
-                wav, sample_rate = load(wav_path)
-                return fname, preprocess(wav)
-
-        self.data_dir = data_dir
-        self.dataset = MainDataSet()
-        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
-
 def _import_dataset_module(data_dir):
     # Dynamically load `Datasets.py` from `data_dir`
     dataset_dir = join(data_dir, 'Datasets.py')

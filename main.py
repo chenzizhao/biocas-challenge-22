@@ -1,11 +1,14 @@
 import argparse
+from os import listdir
+from os.path import join
 import torch
 from tqdm import tqdm
+from data.SPRSound.preprocess import preprocess
 import data_loader.data_loaders as module_data
 import model.model as module_arch
 from parse_config import ConfigParser
 import collections
-
+from torchaudio import load
 from utils.util import write_json
 
 
@@ -18,17 +21,9 @@ def main(config):
     out_file = config['main']['out_file']
     assert task_level in (11,12,21,22), "Task level must be in (11,12,21,22)"
     
+    # TODO
     assert task_level == 21, "We only support DataLoader for task 2-1 right now"
-
-    # setup data_loader instances
-    data_loader = module_data.MainDataLoader(
-        wav_dir,
-        batch_size=1,
-        shuffle=False,
-        validation_split=0.0,
-        training=False,
-        num_workers=2
-    )
+    CLASSES = ('Normal', 'Poor Quality', 'Adventitious')
 
     # build model architecture
     model = config.init_obj('arch', module_arch)
@@ -49,12 +44,14 @@ def main(config):
     output_log = {}
 
     with torch.no_grad():
-        for i, (wav_name, data) in enumerate(tqdm(data_loader)):
-            wav_name = wav_name[0] # not sure why wav_name is a singleton tuple
-            data = data.to(device)
-            output = model(data)
+        for i, wav_name in enumerate(tqdm(listdir(wav_dir))):
+            data, _ = load(join(wav_dir, wav_name))
+            data = data.squeeze().cpu().detach().numpy()
+            processed = preprocess(data)
+            processed = processed.to(device)
+            output = model(processed)
             pred = torch.argmax(output).item()
-            output_log[wav_name] = data_loader.CLASSES[pred]
+            output_log[wav_name] = CLASSES[pred]
     write_json(output_log, out_file)
     logger.info("Write output to {}".format(out_file))
 
