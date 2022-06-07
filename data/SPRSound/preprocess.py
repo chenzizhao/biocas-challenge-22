@@ -108,7 +108,7 @@ def save_pic_stft(wav_dir,save_dir):
 def save_pic_mel(wav_dir,save_dir):
     
     for file in os.listdir(wav_dir):           
-        sr,y = wav.read(wav_dir+'/'+file)
+        y, sr = librosa.load(wav_dir+'/'+file)
         mel_spect = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=2048, hop_length=1024)
         mel_spect = librosa.power_to_db(mel_spect, ref=np.max)
         log_melspec = librosa.amplitude_to_db(mel_spect)
@@ -125,6 +125,12 @@ def save_pic_mel(wav_dir,save_dir):
 
 
 if __name__ == '__main__':
-    save_pic_wavelet('','')
-    save_pic_stft('','')
-    save_pic_mel('','')
+    
+    clip = ''
+    processed_wavelet = ''
+    processed_stft = ''
+    processed_mel = ''
+    
+    save_pic_wavelet(clip,processed_wavelet)
+    save_pic_stft(clip,processed_stft)
+    save_pic_mel(clip,processed_mel)
