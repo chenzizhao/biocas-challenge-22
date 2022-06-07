@@ -121,15 +121,7 @@ def save_pic_stft(wav_dir,save_dir):
         plt.close()
 
 
-        
-def preprocess_img(image):
 
-    img=cv2.imread(image)
-    process=cv2.resize(img,(224,224))
-    transf = transforms.ToTensor()
-    img_tensor = transf(img)
-    
-    return img_tensor
 
 if __name__ == '__main__':
     save_pic_wavelet('','')
