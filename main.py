@@ -20,15 +20,16 @@ def main(config):
     wav_dir = config['main']['wav_dir']
     out_file = config['main']['out_file']
     assert task_level in (11,12,21,22), "Task level must be in (11,12,21,22)"
-    
-    # TODO
-    assert task_level == 21, "We only support DataLoader for task 2-1 right now"
-    CLASSES = ('Normal', 'Poor Quality', 'Adventitious')
+    task = task_level//10
+    level = task_level%10
+    # ensure the loaded pretrained model is consistent with the specified task_level
+    assert task == config['data_loader']['args']['task']
+    assert level == config['data_loader']['args']['level']
+    CLASSES = module_data.resp_classes(task, level)
 
     # build model architecture
     model = config.init_obj('arch', module_arch)
     logger.info(model)
-
     logger.info('Loading checkpoint: {} ...'.format(config.resume))
     checkpoint = torch.load(config.resume)
     state_dict = checkpoint['state_dict']
@@ -42,10 +43,10 @@ def main(config):
     model.eval()
 
     output_log = {}
-
     with torch.no_grad():
-        for i, wav_name in enumerate(tqdm(listdir(wav_dir))):
+        for wav_name in tqdm(listdir(wav_dir)):
             data, _ = load(join(wav_dir, wav_name))
+            # TODO: enable GPU? (also see preprocess.py)
             data = data.squeeze().cpu().detach().numpy()
             processed = preprocess(data)
             processed = processed.to(device)
