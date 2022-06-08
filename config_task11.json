@@ -30,7 +30,7 @@
     },
     "loss": "cross_entropy",
     "metrics": [
-        "accuracy", "speficity", "sensitivity_task2", "score_task2"
+        "accuracy", "speficity", "sensitivity_task1", "score_task1"
     ],
     "lr_scheduler": {
         "type": "StepLR",
@@ -54,8 +54,8 @@
     },
 
     "main": {
-        "task_level": 21,
-        "wav_dir": "testcase/task2_wav/",
-        "out_file": "testcase/my_output/task21_output.json"
+        "task_level": 11,
+        "wav_dir": "testcase/task1_wav/",
+        "out_file": "testcase/my_output/task11_output.json"
     }
 }
