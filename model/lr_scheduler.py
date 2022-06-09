@@ -1,6 +1,6 @@
 import torch.optim as optim
 
-from optimizer import Adam
+from model.optimizer import Adam
 
 
 def lr_scheduler():
