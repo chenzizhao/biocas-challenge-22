@@ -1,5 +1,5 @@
 import torch.optim as optim
-from model import LightCNN
+from model.model import LightCNN
 
 def Adam():
     model = LightCNN()
