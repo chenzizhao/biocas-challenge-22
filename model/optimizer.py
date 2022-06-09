@@ -1,6 +1,6 @@
 import torch.optim as optim
-from model import lightcnn
+from model import LightCNN
 
 def Adam():
-    model = lightcnn()
+    model = LightCNN()
     return optim.Adam(model.parameters(),lr=0.01)
