@@ -82,6 +82,20 @@ conda env export > environment.yml
 pip freeze > requirements.txt
 ```
 
+## Release checklist (order matters)
+
+1. Update conda dependency
+2. Upload release versions to wandb
+3. Update the saved_resume_path in main.py
+4. Test in root folder `bash testcase/test.sh`
+5. Copy everything to a release folder, note:
+    * data/SPRSound/: keep only init.py, preprocess.py and Dataset.py.
+    __Do not copy__ the wav or the clip folder, because they are huge.
+    * saved: we only need to keep those used in main.py (Check list 1)
+    * drop cache and wandb/
+6. In the release folder, double check `bash testcase/test.sh` works.
+7. Zip the release folder. 
+
 ## Acknowledegment
 
 This repository is generated from the [PyTorch Template Project](https://github.com/victoresque/pytorch-template) by [Victor Huang](https://github.com/victoresque). Below is the original `README.md`, just for your reference.
