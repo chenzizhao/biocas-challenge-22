@@ -64,6 +64,7 @@ pyparsing @ file:///tmp/build/80754af9/pyparsing_1635766073266/work
 PySocks @ file:///tmp/build/80754af9/pysocks_1605305812635/work
 python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
 pytz==2021.3
+PyWavelets @ file:///tmp/build/80754af9/pywavelets_1648710015787/work
 PyYAML==6.0
 pyzmq @ file:///tmp/build/80754af9/pyzmq_1638434985866/work
 requests @ file:///opt/conda/conda-bld/requests_1641824580448/work
