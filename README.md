@@ -29,10 +29,8 @@ python train.py -c config_task21.json
 
 Step 5: Run mini test cases as provided by the organizers.
 
-TODO work in progress
-
 ```shell
-bash ./testcase/test.sh
+bash testcase/test.sh
 ```
 
 which is just a few lines in the form of
@@ -41,10 +39,8 @@ which is just a few lines in the form of
 python3 main.py --task 11 --wav /path/to/task1_wav/ --out /path/to/task11_output.json
 ```
 
-Neither lines above work yet. The following works:
-
 ```shell
-python main.py -c config_task21.json -r saved/models/Audio_Resp_21/0523_235733/model_best.pth
+python test.py -c config_task21.json -r saved/models/Audio_Resp_21/0523_235733/model_best.pth
 ```
 
 ## Notes on training
