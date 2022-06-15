@@ -79,7 +79,7 @@ conda install scipy
 conda remove scipy
 conda clean -a
 conda env export > environment.yml
-pip freeze > requirements.txt
+pip list --format=freeze > requirements.txt
 ```
 
 ## Release checklist (order matters)
