@@ -111,3 +111,7 @@ wandb/
 .vscode/
 .idea/
 __MACOSX/
+
+# Project specific
+testcase/my_output/
+processed

@@ -1,11 +1,11 @@
 {
-    "name": "Audio_Resp_21",
+    "name": "Audio_Resp_22",
     "n_gpu": 1,
 
     "arch": {
         "type": "LightCNN",
         "args": {
-            "outdim":3
+            "outdim":5
         }
     },
     "data_loader": {
@@ -17,7 +17,7 @@
             "validation_split": 0.1,
             "num_workers": 2,
             "task":2,
-            "level":1
+            "level":2
         }
     },
     "optimizer": {
@@ -54,8 +54,8 @@
     },
 
     "main": {
-        "task_level": 21,
+        "task_level": 22,
         "wav_dir": "testcase/task2_wav/",
-        "out_file": "testcase/my_output/task21_output.json"
+        "out_file": "testcase/my_output/task22_output.json"
     }
 }

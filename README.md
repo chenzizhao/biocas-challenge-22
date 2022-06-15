@@ -29,10 +29,8 @@ python train.py -c config_task21.json
 
 Step 5: Run mini test cases as provided by the organizers.
 
-TODO work in progress
-
 ```shell
-bash ./testcase/test.sh
+bash testcase/test.sh
 ```
 
 which is just a few lines in the form of
@@ -41,10 +39,8 @@ which is just a few lines in the form of
 python3 main.py --task 11 --wav /path/to/task1_wav/ --out /path/to/task11_output.json
 ```
 
-Neither lines above work yet. The following works:
-
 ```shell
-python main.py -c config_task21.json -r saved/models/Audio_Resp_21/0523_235733/model_best.pth
+python test.py -c config_task21.json -r saved/models/Audio_Resp_21/0523_235733/model_best.pth
 ```
 
 ## Notes on training
@@ -83,8 +79,22 @@ conda install scipy
 conda remove scipy
 conda clean -a
 conda env export > environment.yml
-pip freeze > requirements.txt
+pip list --format=freeze > requirements.txt
 ```
+
+## Release checklist (order matters)
+
+1. Update conda dependency
+2. Upload release versions to wandb
+3. Update the saved_resume_path in main.py
+4. Test in root folder `bash testcase/test.sh`
+5. Copy everything to a release folder, note:
+    * data/SPRSound/: keep only init.py, preprocess.py and Dataset.py.
+    __Do not copy__ the wav or the clip folder, because they are huge.
+    * saved: we only need to keep those used in main.py (Check list 1)
+    * drop cache and wandb/
+6. In the release folder, double check `bash testcase/test.sh` works.
+7. Zip the release folder. 
 
 ## Acknowledegment
 

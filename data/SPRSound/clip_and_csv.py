@@ -44,7 +44,7 @@ def parse_json_and_clip(jname):
         clip = audio[start:end]
         clip.export(join(CLIP_DIR, clip_name), format='wav')
 
-        label_12 = event['type']
+        label_12 = event['type'].replace('+', ' & ')
         label_11 = 'Adventitious' if label_12 != 'Normal' else label_12
         new_entry1 = (clip_name, patient_id, age, gender, loc, rec_id, i,
             label_11, label_12)

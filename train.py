@@ -6,6 +6,7 @@ import data_loader.data_loaders as module_data
 import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
+import os
 from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
@@ -21,6 +22,7 @@ np.random.seed(SEED)
 def main(config):
     if config['trainer']['wandb']:
         import wandb
+        os.environ["WANDB_MODE"] = "offline"
         wandb.init(project='biocas', entity="biocas22")
         wandb.tensorboard.patch(save=True, tensorboard_x=True, pytorch=True)
     logger = config.get_logger('train')
