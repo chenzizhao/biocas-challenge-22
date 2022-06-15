@@ -22,8 +22,8 @@ import pywt
 import librosa
 import librosa.display as display
 from scipy.signal import butter, lfilter
-from os import listdir
-from os.path import join
+from os import listdir, makedirs
+from os.path import join, exists
 import tempfile
 from tqdm import tqdm
 
@@ -142,6 +142,9 @@ if __name__ == '__main__':
     REC_DIR = "wav"
     CLIP_DIR = "clip"
     PROC_DIR = "processed"
+
+    if not exists(PROC_DIR):
+        makedirs(PROC_DIR)
 
     for dir in (REC_DIR, CLIP_DIR):
         print(f"Processing waves in {dir}/ folder")
