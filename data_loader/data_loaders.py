@@ -27,19 +27,15 @@ class Resp21DataLoader(BaseDataLoader):
                 tensors += [wave]
                 targets += [torch.LongTensor([self.CLASS2INT[label]])]
             # Group the list of tensors into a batched tensor
-            # -- again hacking here, we might want variable length
-            tensors[0] = F.pad(tensors[0], (0, 122880-tensors[0].shape[-1]), mode='constant', value=0.)
-            
-            tensors = _pad_sequence(tensors)
+            tensors = torch.stack(tensors)
             tensors.squeeze_(1)
             targets = torch.stack(targets)
             targets.squeeze_(1)
             return tensors, targets
 
-        self.data_dir = data_dir
         Datasets = _import_dataset_module(data_dir)
-        self.dataset = Datasets.Resp21Dataset(data_dir)
-        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers, collate_fn=collate_fn)
+        dataset = Datasets.Resp21Dataset(data_dir)
+        super().__init__(dataset, batch_size, shuffle, validation_split, num_workers, collate_fn=collate_fn)
 
 class MainDataLoader(BaseDataLoader):
 
@@ -58,21 +54,11 @@ class MainDataLoader(BaseDataLoader):
                 fname = self.fnames[index]
                 wav_path = join(self.audio_dir, fname)
                 wav, sample_rate = load(wav_path)
-                # return preprocess(wav)
-
-                # hack
-                wav = F.pad(wav, (0, 122880-wav.shape[-1]), mode='constant', value=0.)
-                return fname, wav
+                return fname, preprocess(wav)
 
         self.data_dir = data_dir
         self.dataset = MainDataSet()
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
-
-def _pad_sequence(batch):
-    # Make all tensor in a batch the same length by padding with zeros
-    batch = [item.t() for item in batch]
-    batch = torch.nn.utils.rnn.pad_sequence(batch, batch_first=True, padding_value=0.)
-    return batch.permute(0, 2, 1)
 
 def _import_dataset_module(data_dir):
     # Dynamically load `Datasets.py` from `data_dir`
