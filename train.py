@@ -10,7 +10,7 @@ import os
 from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
-
+import torchvision.models as models
 
 # fix random seeds for reproducibility
 SEED = 123
@@ -32,7 +32,9 @@ def main(config):
     valid_data_loader = data_loader.split_validation()
 
     # build model architecture, then print to console
-    model = config.init_obj('arch', module_arch)
+    ##model = config.init_obj('arch', module_arch)
+    model = models.resnet18(pretrained=True) # todo train with pretrained to see
+    #model = models.vgg16(pretrained=True)
     logger.info(model)
 
     # prepare for (multi-device) GPU training
