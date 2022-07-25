@@ -129,6 +129,27 @@ def preprocess_wavelet(wav, sample_freq=8000):
     img_tensor = _display_to_tensor_routine()
     return img_tensor
 
+
+
+def preprocess_wav2vec(wav):
+
+    waveform, sample_rate = torchaudio.load(wav)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    waveform = waveform.to(device)
+    bundle = torchaudio.pipelines.WAV2VEC2_ASR_BASE_960H
+    if sample_rate != bundle.sample_rate:
+        waveform = torchaudio.functional.resample(waveform, sample_rate, bundle.sample_rate)
+
+    model = bundle.get_model().to(device)
+    with torch.inference_mode():    
+        features, _ = model.extract_features(waveform)
+        img_tensor = features[11]
+        img_tensor.unsqueeze_(0)
+        img_tensor = torch.nn.functional.interpolate(img_tensor, size=(224,224))
+        img_tensor.squeeze_(0)
+
+    return img_tensor
+
 def preprocess(wav):
     """
     Input: wav as a np.ndarray
@@ -136,12 +157,12 @@ def preprocess(wav):
     --------------------
     This is a simple wrap function to provide a unifying API
     """
-    return preprocess_stft(wav, sample_freq=8000)
+    return preprocess_wav2vec(wav)
 
 if __name__ == '__main__':
     REC_DIR = "wav"
     CLIP_DIR = "clip"
-    PROC_DIR = "processed"
+    PROC_DIR = "processed_wav2vec"
 
     if not exists(PROC_DIR):
         makedirs(PROC_DIR)
