@@ -31,7 +31,7 @@ def sensitivity_task1(output, target):
 def sensitivity_task2(output, target):
     return sensitivity(output, target, task=2)
 
-def speficity(output, target):
+def specificity(output, target):
     """
            Correctly predicted normal events
     SP =  -----------------------------------------
@@ -46,7 +46,7 @@ def speficity(output, target):
 
 def score(output, target, se_fn):
     se = se_fn(output, target)
-    sp = speficity(output, target)
+    sp = specificity(output, target)
     avg_score = (se + sp) / 2
     har_score = (2*se*sp) / (se + sp)
     return (avg_score + har_score) / 2

@@ -30,7 +30,7 @@
     },
     "loss": "cross_entropy",
     "metrics": [
-        "accuracy", "speficity", "sensitivity_task1", "score_task1"
+        "accuracy", "specificity", "sensitivity_task1", "score_task1"
     ],
     "lr_scheduler": {
         "type": "StepLR",
