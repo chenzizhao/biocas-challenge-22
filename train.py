@@ -22,7 +22,7 @@ np.random.seed(SEED)
 def main(config):
     if config['trainer']['wandb']:
         import wandb
-        os.environ["WANDB_MODE"] = "offline"
+        # os.environ["WANDB_MODE"] = "offline"
         wandb.init(project='biocas', entity="biocas22")
         wandb.tensorboard.patch(save=True, tensorboard_x=True, pytorch=True)
     logger = config.get_logger('train')
