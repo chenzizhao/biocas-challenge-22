@@ -78,7 +78,8 @@ if __name__ == '__main__':
     options = [
         CustomArgs(['--lr', '--learning_rate'], type=float, target='optimizer;args;lr'),
         CustomArgs(['--bs', '--batch_size'], type=int, target='data_loader;args;batch_size'),
-        CustomArgs(['--wandb'], type=bool, target='trainer;wandb')
+        CustomArgs(['--wandb'], type=bool, target='trainer;wandb'),
+	CustomArgs(['--checkpoint_dir'], type=str, target='trainer;save_dir'),
     ]
     config = ConfigParser.from_args(args, options)
     main(config)
