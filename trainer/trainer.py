@@ -124,7 +124,7 @@ class Trainer(BaseTrainer):
         predicted = torch.argmax(output, dim=1).data.cpu().numpy()
         CLASSES = self.data_loader.CLASSES
         # Build confusion matrix
-        cf_matrix = confusion_matrix(target, predicted)
+        cf_matrix = confusion_matrix(target, predicted, labels=list(range(len(CLASSES))))
         df_cm = pd.DataFrame(cf_matrix/np.sum(cf_matrix) * len(CLASSES), index=[i for i in CLASSES], columns=[i for i in CLASSES])
         plt.figure(figsize=(12, 7))
         fig = sn.heatmap(df_cm, annot=True).get_figure()
