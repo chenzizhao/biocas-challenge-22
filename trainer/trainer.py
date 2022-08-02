@@ -4,6 +4,13 @@ from torchvision.utils import make_grid
 from base import BaseTrainer
 from utils import inf_loop, MetricTracker
 
+from sklearn.metrics import confusion_matrix
+import seaborn as sn
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from utils.util import prepare_device
+import io
 
 class Trainer(BaseTrainer):
     """
@@ -59,6 +66,7 @@ class Trainer(BaseTrainer):
                     self._progress(batch_idx),
                     loss.item()))
                 self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
+                self.writer.add_image('confusion matrix', self._createConfusionMatrix(target, output))
 
             if batch_idx == self.len_epoch:
                 break
@@ -93,6 +101,7 @@ class Trainer(BaseTrainer):
                 for met in self.metric_ftns:
                     self.valid_metrics.update(met.__name__, met(output, target))
                 self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
+                self.writer.add_image('confusion matrix', self._createConfusionMatrix(target, output))
 
         # add histogram of model parameters to the tensorboard
         for name, p in self.model.named_parameters():
@@ -108,3 +117,19 @@ class Trainer(BaseTrainer):
             current = batch_idx
             total = self.len_epoch
         return base.format(current, total, 100.0 * current / total)
+
+    def _createConfusionMatrix(self, target, output):
+        # Constant for classes
+        target = target.data.cpu().numpy()
+        predicted = torch.argmax(output, dim=1).data.cpu().numpy()
+        CLASSES = self.data_loader.CLASSES
+        # Build confusion matrix
+        cf_matrix = confusion_matrix(target, predicted)
+        df_cm = pd.DataFrame(cf_matrix/np.sum(cf_matrix) * len(CLASSES), index=[i for i in CLASSES], columns=[i for i in CLASSES])
+        plt.figure(figsize=(12, 7))
+        fig = sn.heatmap(df_cm, annot=True).get_figure()
+        fig.canvas.draw()
+        img = np.asarray(fig.canvas.buffer_rgba())
+        img = img[:, :, 0:-1]  # HWC, Drop alpha channel
+        img = np.transpose(img, (2, 0, 1))  # CHW
+        return img
