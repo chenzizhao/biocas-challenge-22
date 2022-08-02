@@ -10,6 +10,7 @@ from parse_config import ConfigParser
 import collections
 from torchaudio import load
 from utils.util import write_json
+import torchvision.models as models
 
 def main(config):
     logger = config.get_logger('main')
@@ -24,10 +25,11 @@ def main(config):
     
 
     # build model architecture
-    model = config.init_obj('arch', module_arch)
+    # model = config.init_obj('arch', module_arch)
+    model = models.resnet18()
     logger.info(model)
     logger.info('Loading checkpoint: {} ...'.format(config.resume))
-    checkpoint = torch.load(config.resume)
+    checkpoint = torch.load(config.resume, map_location=torch.device('cpu'))
     state_dict = checkpoint['state_dict']
     if config['n_gpu'] > 1:
         model = torch.nn.DataParallel(model)
