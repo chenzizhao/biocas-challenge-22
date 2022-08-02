@@ -3,7 +3,7 @@
     "n_gpu": 1,
 
     "arch": {
-        "type": "LightCNN",
+        "type": "WrappedPretrainedResNet",
         "args": {
             "outdim":7
         }
