@@ -22,7 +22,7 @@ def main(config):
     task = task_level//10
     level = task_level%10
     CLASSES = module_data.resp_classes(task, level)
-    
+
 
     # build model architecture
     # model = config.init_obj('arch', module_arch)
