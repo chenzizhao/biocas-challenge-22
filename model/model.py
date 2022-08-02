@@ -1,5 +1,6 @@
 import torch.nn as nn
 from base import BaseModel
+import torchvision.models as models
 
 class LightCNN(BaseModel):
     def __init__(self, outdim) -> None:
@@ -36,3 +37,14 @@ class LightCNN(BaseModel):
         )
 
         return self.dens_model(self.cnn_model(x))
+
+
+class WrappedPretrainedResNet(BaseModel):
+    def __init__(self, outdim) -> None:
+        super().__init__()
+        self.resnet = models.resnet18(pretrained=True)
+        self.dense = nn.Linear(1000, outdim)
+        self.dropout = nn.Dropout(0.5)
+
+    def forward(self, x):
+        return self.dense(self.dropout(self.resnet(x)))
