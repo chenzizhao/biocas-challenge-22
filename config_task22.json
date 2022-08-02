@@ -28,7 +28,12 @@
             "amsgrad": true
         }
     },
-    "loss": "cross_entropy",
+    "loss": {
+        "type": "cross_entropy",
+        "args": {
+            "weight": [0.07, 0.21, 0.24, 0.17, 0.3]
+        }
+    },
     "metrics": [
         "accuracy", "specificity", "sensitivity_task2", "score_task2"
     ],
