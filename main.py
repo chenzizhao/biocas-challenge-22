@@ -4,10 +4,10 @@ python3 main.py --task 11 --wav testcase/task1_wav/ --out testcase/my_output/tas
 
 # Update me before release
 resume_paths = {
-    11:'saved/models/Audio_Resp_11/0608_020201/model_best.pth',
-    12:'saved/models/Audio_Resp_12/0608_212233/model_best.pth',
-    21:'saved/models/Audio_Resp_21/0608_214241/model_best.pth',
-    22:'saved/models/Audio_Resp_22/0608_221550/model_best.pth'
+    11:'saved_v/model11/model_best11.pth',
+    12:'saved_v/model12/model_best12.pth',
+    21:'saved_v/model21/model_best21.pth',
+    22:'saved_v/model22/model_best22.pth'
 }
 
 import argparse
@@ -23,6 +23,6 @@ if __name__ == '__main__':
     tasklevel = args.task
     resume_path = resume_paths[tasklevel]
     config_file = f'config_task{tasklevel}.json'
-    command = f'python test.py -c {config_file} -r {resume_path} --wav {args.wav} --out {args.out}'
+    command = f'python3 test.py -c {config_file} -r {resume_path} --wav {args.wav} --out {args.out}'
     os.system(command)
     

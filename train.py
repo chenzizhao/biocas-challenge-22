@@ -25,6 +25,9 @@ def main(config):
         # os.environ["WANDB_MODE"] = "offline"
         wandb.init(project='biocas', entity="biocas22")
         wandb.tensorboard.patch(save=True, tensorboard_x=True, pytorch=True)
+        wandb.run.save()
+        _config = wandb.config
+        _config.update(config)
     logger = config.get_logger('train')
 
     # setup data_loader instances
