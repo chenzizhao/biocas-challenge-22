@@ -8,7 +8,7 @@ class RespDataset(Dataset):
         assert task in (1,2)
         self.task = task
         self.csv = pd.read_csv(join(data_dir, f'task{task}.csv'))
-        self.dir = join(data_dir, 'processed')
+        self.dir = join(data_dir, 'processed_ast')
 
     def __len__(self):
         return len(self.csv)
@@ -18,6 +18,11 @@ class RespDataset(Dataset):
         wav_name = entry['wav_name']
         target = (entry[f'label_{self.task}1'], entry[f'label_{self.task}2'])
         wav = torch.load(join(self.dir, wav_name))
+        ##normolize
+        #wav = (wav-37.3)/(2.3*2)
+        wav = wav.to(torch.float32)
+        return wav, target
+
         return wav, target
 
 if __name__ == "__main__":
