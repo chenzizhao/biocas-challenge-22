@@ -4,7 +4,7 @@
     "arch": {
         "type": "ASTModel",
         "args": {
-            "label_dim":3, 
+            "label_dim":5, 
             "input_fdim":128,
             "input_tdim":256,
             "audioset_pretrain": true
