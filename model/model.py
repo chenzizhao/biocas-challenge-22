@@ -48,3 +48,11 @@ class WrappedPretrainedResNet(BaseModel):
 
     def forward(self, x):
         return self.dense(self.dropout(self.resnet(x)))
+
+class LinearNet(BaseModel):
+    def __init__(self, indim, outdim):
+        super().__init__()
+        self.fc = nn.Linear(indim, outdim)
+
+    def forward(self, x):
+        return self.fc(x)
