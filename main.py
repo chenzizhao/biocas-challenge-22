@@ -4,10 +4,10 @@ python3 main.py --task 11 --wav testcase/task1_wav/ --out testcase/my_output/tas
 
 # Update me before release
 resume_paths = {
-    11:'saved_v/model11/model_best11.pth',
-    12:'saved_v/model12/model_best12.pth',
-    21:'saved_v/model21/model_best21.pth',
-    22:'saved_v/model22/model_best22.pth'
+    11:'saved_v/model11',
+    12:'saved_v/model12',
+    21:'saved_v/model21',
+    22:'saved_v/model22'
 }
 
 import argparse
@@ -21,8 +21,9 @@ if __name__ == '__main__':
     parser.add_argument('--out', type=pathlib.Path, required=True)
     args = parser.parse_args()
     tasklevel = args.task
-    resume_path = resume_paths[tasklevel]
-    config_file = f'config_task{tasklevel}.json'
-    command = f'python3 test.py -c {config_file} -r {resume_path} --wav {args.wav} --out {args.out}'
+    base_path = resume_paths[tasklevel]
+    resume_path = os.path.join(base_path, f'model_best{tasklevel}.pth')
+    config_file = os.path.join(base_path, 'config.json')
+    command = f'python3 test.py -c {config_file} -r {resume_path} --wav {args.wav} --out {args.out} --checkpoint_dir saved/'
     os.system(command)
     

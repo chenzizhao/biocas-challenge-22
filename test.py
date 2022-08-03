@@ -25,8 +25,7 @@ def main(config):
 
 
     # build model architecture
-    # model = config.init_obj('arch', module_arch)
-    model = models.resnet18()
+    model = config.init_obj('arch', module_arch)
     logger.info(model)
     logger.info('Loading checkpoint: {} ...'.format(config.resume))
     checkpoint = torch.load(config.resume, map_location=torch.device('cpu'))
@@ -72,6 +71,7 @@ if __name__ == '__main__':
         CustomArgs(['--task'], type=int, target='main;task_level'),
         CustomArgs(['--wav'], type=str, target='main;wav_dir'),
         CustomArgs(['--out'], type=str, target='main;out_file'),
+        CustomArgs(['--checkpoint_dir'], type=str, target='trainer;save_dir'),
     ]
 
     config = ConfigParser.from_args(args, options=options)
