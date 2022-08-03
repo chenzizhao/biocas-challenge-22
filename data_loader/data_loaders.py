@@ -25,12 +25,12 @@ def resp_classes(task, level):
 
 class RespDataLoader(BaseDataLoader):
 
-    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True, task=1, level=1):
+    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True, task=1, level=1, input_dir='processed'):
         self.CLASSES = resp_classes(task, level)
         self.CLASS2INT = {label:i for (i, label) in enumerate(self.CLASSES)}
         self.LEVEL = level
 
-        dataset = Datasets.RespDataset(data_dir, task=task, raw=False)
+        dataset = Datasets.RespDataset(data_dir, task=task, input_dir=input_dir)
         super().__init__(dataset, batch_size, shuffle, validation_split, num_workers, collate_fn=self.collate_fn)
 
     def collate_fn(self, batch):
@@ -54,7 +54,7 @@ class PadDataLoader(BaseDataLoader):
         self.LEVEL = level
         self.padding_max = padding_max
 
-        dataset = Datasets.RespDataset(data_dir, task=task, raw=True)
+        dataset = Datasets.RespDataset(data_dir, task=task)
         super().__init__(dataset, batch_size, shuffle, validation_split, num_workers, collate_fn=self.collate_fn)
 
     def collate_fn(self, batch):
