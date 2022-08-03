@@ -116,3 +116,4 @@ __MACOSX/
 # Project specific
 testcase/my_output/
 processed
+slurm-*

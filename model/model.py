@@ -149,11 +149,11 @@ class ASTModel(nn.Module):
             if model_size != 'base384':
                 raise ValueError('currently only has base384 AudioSet pretrained model.')
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-            if os.path.exists('../../pretrained_models/audioset_10_10_0.4593.pth') == False:
+            if os.path.exists('./pretrained_models/audioset_10_10_0.4593.pth') == False:
                 # this model performs 0.4593 mAP on the audioset eval set
                 audioset_mdl_url = 'https://www.dropbox.com/s/cv4knew8mvbrnvq/audioset_0.4593.pth?dl=1'
-                wget.download(audioset_mdl_url, out='../../pretrained_models/audioset_10_10_0.4593.pth')
-            sd = torch.load('../../pretrained_models/audioset_10_10_0.4593.pth', map_location=device)
+                wget.download(audioset_mdl_url, out='./pretrained_models/audioset_10_10_0.4593.pth')
+            sd = torch.load('./pretrained_models/audioset_10_10_0.4593.pth', map_location=device)
             audio_model = ASTModel(label_dim=527, fstride=10, tstride=10, input_fdim=128, input_tdim=1024, imagenet_pretrain=False, audioset_pretrain=False, model_size='base384', verbose=False)
             audio_model = torch.nn.DataParallel(audio_model)
             audio_model.load_state_dict(sd, strict=False)
@@ -225,3 +225,16 @@ class WrappedPretrainedResNet(BaseModel):
 
     def forward(self, x):
         return self.dense(self.dropout(self.resnet(x)))
+
+class LinearNet(BaseModel):
+    def __init__(self, indim, outdim):
+        super().__init__()
+        self.l1 = nn.Linear(indim, 128)
+        self.l2 = nn.Linear(128, 64)
+        self.l3 = nn.Linear(64, outdim)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        self.net = nn.Sequential(
+            self.l1, self.relu, self.l2, self.relu, self.l3)
+        return self.net(x)
