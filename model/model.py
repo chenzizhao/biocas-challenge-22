@@ -52,7 +52,12 @@ class WrappedPretrainedResNet(BaseModel):
 class LinearNet(BaseModel):
     def __init__(self, indim, outdim):
         super().__init__()
-        self.fc = nn.Linear(indim, outdim)
+        self.l1 = nn.Linear(indim, 128)
+        self.l2 = nn.Linear(128, 64)
+        self.l3 = nn.Linear(64, outdim)
+        self.relu = nn.ReLU()
 
     def forward(self, x):
-        return self.fc(x)
+        self.net = nn.Sequential(
+            self.l1, self.relu, self.l2, self.relu, self.l3)
+        return self.net(x)
