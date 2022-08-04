@@ -6,7 +6,7 @@
         "args": {
             "label_dim":5, 
             "input_fdim":128,
-            "input_tdim":256,
+            "input_tdim":768,
             "audioset_pretrain": true
            
         }
