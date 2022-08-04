@@ -27,6 +27,8 @@ from os.path import join, exists
 import tempfile
 from tqdm import tqdm
 import soundfile as sf
+import torchaudio
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def normalize(x):
     maximum = np.max(x)
@@ -147,6 +149,25 @@ def preprocess_ast(wav,fr):
     sig_tensor.squeeze_(0)
     return sig_tensor 
 
+def preprocess_ast_wav2vec(wav,fr):
+    waveform = wav
+    sample_rate = fr
+    waveform = waveform.to(device)
+    bundle = torchaudio.pipelines.WAV2VEC2_ASR_BASE_960H
+    if sample_rate != bundle.sample_rate:
+        waveform = torchaudio.functional.resample(waveform, sample_rate, bundle.sample_rate)
+        
+    model = bundle.get_model().to(device)
+    with torch.inference_mode():  
+        features, _ = model.extract_features(waveform)
+        img_tensor = features[7]
+        img_tensor = torch.permute(img_tensor,(0,2,1))
+        img_tensor.unsqueeze_(0)
+        img_tensor = torch.nn.functional.interpolate(img_tensor, size=(768,128))
+        img_tensor.squeeze_(0)
+        img_tensor.squeeze_(0)
+    return img_tensor
+
 def preprocess(wav,fr):
     """
     Input: wav as a np.ndarray
@@ -154,12 +175,12 @@ def preprocess(wav,fr):
     --------------------
     This is a simple wrap function to provide a unifying API
     """
-    return preprocess_ast(wav,fr)
+    return preprocess_ast_wav2vec(wav,fr)
 
 if __name__ == '__main__':
     REC_DIR = "wav"
     CLIP_DIR = "clip"
-    PROC_DIR = "processed_ast"
+    PROC_DIR = "processed_ast_wav2vec"
 
     if not exists(PROC_DIR):
         makedirs(PROC_DIR)
