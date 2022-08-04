@@ -6,7 +6,7 @@
         "args": {
             "label_dim":5, 
             "input_fdim":128,
-            "input_tdim":256,
+            "input_tdim":768,
             "audioset_pretrain": true
            
         }
@@ -15,9 +15,9 @@
         "type": "RespDataLoader",
         "args":{
             "data_dir": "data/SPRSound/",
-            "batch_size": 32,
+            "batch_size": 16,
             "shuffle": true,
-            "validation_split": 0.1,
+            "validation_split": 0.2,
             "num_workers": 2,
             "task":2,
             "level":2,
