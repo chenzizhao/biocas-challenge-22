@@ -26,7 +26,6 @@ from os import listdir, makedirs
 from os.path import join, exists
 import tempfile
 from tqdm import tqdm
-import soundfile as sf
 import torchaudio
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -185,10 +184,18 @@ if __name__ == '__main__':
     if not exists(PROC_DIR):
         makedirs(PROC_DIR)
 
-    for dir in (REC_DIR, CLIP_DIR):
-        print(f"Processing waves in {dir}/ folder")
-        for wav_name in tqdm(listdir(dir)):
-            wav, fr = sf.read(join(dir, wav_name))
-            #wav = wav.squeeze().cpu().detach().numpy()
-            processed = preprocess(wav,fr)
-            torch.save(processed, join(PROC_DIR, wav_name))
+    # for dir in (REC_DIR, CLIP_DIR):
+    #     print(f"Processing waves in {dir}/ folder")
+    #     for wav_name in tqdm(listdir(dir)):
+    #         wav, fr = load(join(dir, wav_name))
+    #         #wav = wav.squeeze().cpu().detach().numpy()
+    #         processed = preprocess(wav,fr)
+    #         torch.save(processed, join(PROC_DIR, wav_name))
+    dir = CLIP_DIR
+    for i, wav_name in tqdm(enumerate(listdir(dir))):
+        if i < 4582:
+            continue
+        wav, fr = load(join(dir, wav_name))
+        #wav = wav.squeeze().cpu().detach().numpy()
+        processed = preprocess(wav,fr)
+        torch.save(processed, join(PROC_DIR, wav_name))

@@ -22,7 +22,7 @@
             "num_workers": 2,
             "task":2,
             "level":1,
-            "input_dir":"processed_ast"
+            "input_dir":"processed_ast_wav2vec"
         }
     },
     "optimizer": {
