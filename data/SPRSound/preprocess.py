@@ -26,6 +26,8 @@ from os import listdir, makedirs
 from os.path import join, exists
 import tempfile
 from tqdm import tqdm
+import torchaudio
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def normalize(x):
     maximum = np.max(x)
@@ -129,27 +131,71 @@ def preprocess_wavelet(wav, sample_freq=8000):
     img_tensor = _display_to_tensor_routine()
     return img_tensor
 
-def preprocess(wav):
+def preprocess_ast(wav,fr):
+    y = wav
+    y = librosa.resample(y,fr,16000)
+    mel_spect = librosa.feature.melspectrogram(y=y, sr=fr, n_fft=2048, hop_length=1024)
+    mel_spect = librosa.power_to_db(mel_spect, ref=np.max)
+    log_melspec = librosa.amplitude_to_db(mel_spect)
+    #librosa.display.specshow(mel_spect[:50], y_axis='mel', fmax=8000, x_axis='time')
+    sig_tensor = torch.from_numpy(log_melspec)
+    #print(sig_tensor.shape)
+    sig_tensor = torch.permute(sig_tensor, (1, 0))
+    sig_tensor.unsqueeze_(0)
+    sig_tensor.unsqueeze_(0)
+    sig_tensor = torch.nn.functional.interpolate(sig_tensor, size=(256,128))
+    sig_tensor.squeeze_(0)
+    sig_tensor.squeeze_(0)
+    return sig_tensor 
+
+def preprocess_ast_wav2vec(wav,fr):
+    waveform = wav
+    sample_rate = fr
+    waveform = waveform.to(device)
+    bundle = torchaudio.pipelines.WAV2VEC2_ASR_BASE_960H
+    if sample_rate != bundle.sample_rate:
+        waveform = torchaudio.functional.resample(waveform, sample_rate, bundle.sample_rate)
+        
+    model = bundle.get_model().to(device)
+    with torch.inference_mode():  
+        features, _ = model.extract_features(waveform)
+        img_tensor = features[7]
+        img_tensor = torch.permute(img_tensor,(0,2,1))
+        img_tensor.unsqueeze_(0)
+        img_tensor = torch.nn.functional.interpolate(img_tensor, size=(768,128))
+        img_tensor.squeeze_(0)
+        img_tensor.squeeze_(0)
+    return img_tensor
+
+def preprocess(wav,fr):
     """
     Input: wav as a np.ndarray
     Output: single tensor as input of classifier.
     --------------------
     This is a simple wrap function to provide a unifying API
     """
-    return preprocess_stft(wav, sample_freq=8000)
+    return preprocess_ast_wav2vec(wav,fr)
 
 if __name__ == '__main__':
     REC_DIR = "wav"
     CLIP_DIR = "clip"
-    PROC_DIR = "processed"
+    PROC_DIR = "processed_ast_wav2vec"
 
     if not exists(PROC_DIR):
         makedirs(PROC_DIR)
 
-    for dir in (REC_DIR, CLIP_DIR):
-        print(f"Processing waves in {dir}/ folder")
-        for wav_name in tqdm(listdir(dir)):
-            wav, _ = load(join(dir, wav_name))
-            wav = wav.squeeze().cpu().detach().numpy()
-            processed = preprocess(wav)
-            torch.save(processed, join(PROC_DIR, wav_name))
+    # for dir in (REC_DIR, CLIP_DIR):
+    #     print(f"Processing waves in {dir}/ folder")
+    #     for wav_name in tqdm(listdir(dir)):
+    #         wav, fr = load(join(dir, wav_name))
+    #         #wav = wav.squeeze().cpu().detach().numpy()
+    #         processed = preprocess(wav,fr)
+    #         torch.save(processed, join(PROC_DIR, wav_name))
+    dir = CLIP_DIR
+    for i, wav_name in tqdm(enumerate(listdir(dir))):
+        if i < 4582:
+            continue
+        wav, fr = load(join(dir, wav_name))
+        #wav = wav.squeeze().cpu().detach().numpy()
+        processed = preprocess(wav,fr)
+        torch.save(processed, join(PROC_DIR, wav_name))

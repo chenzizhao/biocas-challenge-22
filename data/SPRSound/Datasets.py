@@ -28,7 +28,9 @@ class RespDataset(Dataset):
         if self.input_dir is None:
             wav, _ = torchaudio.load(join(self.dir, wav_name))
         else:
-            wav = torch.load(join(self.dir, wav_name))
+            wav = torch.load(join(self.dir, wav_name), map_location='cpu')
+            # normalize
+            wav = (wav-37.3)/(2.3*2)
         return wav, target
 
 if __name__ == "__main__":

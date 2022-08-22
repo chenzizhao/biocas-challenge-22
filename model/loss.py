@@ -9,5 +9,5 @@ def cross_entropy(output, target, device=None, weight=None):
     if weight is None:
         return F.cross_entropy(output, target)
     else:
-        weight = torch.tensor(weight, dtype=torch.float, device=device)
+        weight = torch.tensor(weight, dtype=output.dtype, device=device)
         return F.cross_entropy(output, target, weight=weight)

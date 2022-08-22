@@ -3,27 +3,32 @@
     "n_gpu": 1,
 
     "arch": {
-        "type": "WrappedPretrainedResNet",
+        "type": "ASTModel",
         "args": {
-            "outdim":3
+            "label_dim":3, 
+            "input_fdim":128,
+            "input_tdim":768,
+            "audioset_pretrain": true
+           
         }
     },
     "data_loader": {
         "type": "RespDataLoader",
         "args":{
             "data_dir": "data/SPRSound/",
-            "batch_size": 32,
+            "batch_size": 16,
             "shuffle": true,
-            "validation_split": 0.1,
+            "validation_split": 0.2,
             "num_workers": 2,
             "task":2,
-            "level":1
+            "level":1,
+            "input_dir":"processed_ast_wav2vec"
         }
     },
     "optimizer": {
         "type": "Adam",
         "args":{
-            "lr": 0.001,
+            "lr": 0.0001,
             "weight_decay": 0,
             "amsgrad": true
         }
@@ -52,7 +57,7 @@
         "verbosity": 2,
         
         "monitor": "min val_loss",
-        "early_stop": 20,
+        "early_stop": 10,
 
         "tensorboard": true,
         "wandb": false
