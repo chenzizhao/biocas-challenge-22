@@ -8,7 +8,9 @@ class RespDataset(Dataset):
     def __init__(self, data_dir, task, input_dir=None):
         assert task in (1,2)
         self.task = task
-        self.csv = pd.read_csv(join(data_dir, f'task{task}.csv'))
+        task_file_name = 'task1.csv' if task==1 else 'task2_filtered.csv'
+        # task_file_name = f'task{task}.csv'
+        self.csv = pd.read_csv(join(data_dir, task_file_name))
         self.input_dir = input_dir
         if input_dir is None:
             if task == 1:
@@ -29,8 +31,8 @@ class RespDataset(Dataset):
             wav, _ = torchaudio.load(join(self.dir, wav_name))
         else:
             wav = torch.load(join(self.dir, wav_name), map_location='cpu')
-            # normalize
-            wav = (wav-37.3)/(2.3*2)
+            # # normalize
+            # wav = (wav-37.3)/(2.3*2)
         return wav, target
 
 if __name__ == "__main__":
