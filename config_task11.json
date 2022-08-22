@@ -3,13 +3,10 @@
     "n_gpu": 1,
 
     "arch": {
-        "type": "ASTModel",
+        "type": "LightCNN",
         "args": {
-            "label_dim":2, 
-            "input_fdim":128,
-            "input_tdim":256,
-            "audioset_pretrain": true
-           
+            "label_dim":2,
+            "indim":1
         }
     },
     
@@ -22,7 +19,8 @@
             "validation_split": 0.1,
             "num_workers": 2,
             "task":1,
-            "level":1
+            "level":1,
+            "input_dir":"processed_wav2vec"
         }
     },
     "optimizer": {

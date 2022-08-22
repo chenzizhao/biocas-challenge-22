@@ -10,10 +10,10 @@ import timm
 from timm.models.layers import to_2tuple,trunc_normal_
 
 class LightCNN(BaseModel):
-    def __init__(self, outdim) -> None:
+    def __init__(self, label_dim, indim=3) -> None:
         super().__init__()
+        outdim = label_dim
         # input [3, 224, 224]
-        indim = 3
         self.conv1 = nn.Conv2d(indim, 32, (9,9))
         self.conv2 = nn.Conv2d(32, 64, (7,7))
         self.conv3 = nn.Conv2d(64, 96, (5,5))
